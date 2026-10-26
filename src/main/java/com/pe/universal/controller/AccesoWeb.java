@@ -29,7 +29,7 @@ public class AccesoWeb implements HandlerInterceptor, WebMvcConfigurer {
         if (usuario == null) return "/ingresar";
         return switch (usuario.rol()) {
             case "CLIENTE" -> "/cliente/pedidos";
-            case "VENDEDOR" -> "/";
+            case "VENDEDOR" -> "/vendedor";
             case "SUPERVISOR" -> "/";
             default -> "/ingresar";
         };

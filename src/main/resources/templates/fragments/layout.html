@@ -15,13 +15,28 @@
                         th:if="${usuarioWeb != null and usuarioWeb.rol == 'CLIENTE'}">0</span></a><a class="btn btn-sm"
                     th:if="${usuarioWeb == null}" th:href="@{/ingresar}">Iniciar sesión</a><a
                     class="btn btn-outline btn-sm" th:if="${usuarioWeb != null and usuarioWeb.rol == 'CLIENTE'}"
-                    th:href="@{/cliente/cuenta}">Mi cuenta</a><button class="nav-toggle" type="button" data-menu-toggle
+                    th:href="@{/cliente/cuenta}">Mi cuenta</a><a class="btn btn-outline btn-sm"
+                    th:if="${usuarioWeb != null and usuarioWeb.rol == 'VENDEDOR'}" th:href="@{/vendedor}">Mi panel</a><button class="nav-toggle" type="button" data-menu-toggle
                     aria-label="Abrir menú">☰</button></div>
         </div><a th:if="${usuarioWeb != null and usuarioWeb.rol == 'CLIENTE'}" th:href="@{/cliente/carrito}"
             class="floating-cart" aria-label="Ver carrito de compras" title="Abrir carrito"><span
                 aria-hidden="true">🛒</span><span class="floating-cart-badge" data-cart-count>0</span></a>
     </header>
-    
+    <aside class="sidebar" th:fragment="navegacionVendedor"><a class="brand" th:href="@{/}"><span
+                class="brand-mark">U</span><span><span class="brand-name">Bodega</span><br><span
+                    class="brand-sub">UNIVERSAL</span></span></a>
+        <div class="role-box">
+            <div class="eyebrow">VENDEDOR</div><b
+                th:text="${usuarioWeb.nombres + ' ' + usuarioWeb.apellidos}">Vendedor</b><br><small>Trujillo · Bodega
+                Universal</small>
+        </div>
+        <nav class="side-menu"><a th:href="@{/vendedor}">Resumen</a><a th:href="@{/vendedor/pos}">Punto de venta</a><a
+                th:href="@{/vendedor/pedidos}">Pedidos</a><a th:href="@{/vendedor/clientes}">Clientes</a><a
+                th:href="@{/vendedor/historial}">Historial de ventas</a><a th:href="@{/vendedor/caja}">Cierre de
+                caja</a></nav>
+        <form th:action="@{/salir}" method="post"><input type="hidden" name="_bodega_csrf"
+                th:value="${csrfBodega}"><button class="logout" type="submit">↪ Cerrar sesión</button></form>
+    </aside>
     
     <footer class="footer" th:fragment="footer">
         <div class="container footer-inner">
