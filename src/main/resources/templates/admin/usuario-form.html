@@ -26,10 +26,7 @@
                     <p class="subline">Solo los supervisores pueden realizar esta operación</p>
                 </div>
             </div>
-            <div class="card" style="max-width:760px">
-                <div class="alert warning">El vendedor recibirá una cuenta con rol VENDEDOR. Para evitar enviar
-                    contraseñas sin protección, establece una contraseña temporal y comunícala por un medio seguro.
-                </div>
+            <div class="card" style="max-width:760px">                
                 <form method="post" th:action="@{/admin/usuarios/nuevo}"><input type="hidden" name="_bodega_csrf"
                         th:value="${csrfBodega}">
                     <div class="form-grid">

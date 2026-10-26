@@ -5,6 +5,10 @@ import com.pe.universal.service.*;
 import jakarta.servlet.http.HttpSession;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import org.springframework.http.CacheControl;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import java.util.stream.Collectors;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
@@ -21,10 +25,13 @@ public class AdminController {
     private final PedidoService pedidos;
     private final VentaService ventas;
     private final CajaService caja;
+    private final ReporteExcelService reportesExcel;
     public AdminController(ProductoService productos, InventarioService inventario,
-            UsuarioService usuarios, PedidoService pedidos, VentaService ventas, CajaService caja) {
+            UsuarioService usuarios, PedidoService pedidos, VentaService ventas, CajaService caja,
+            ReporteExcelService reportesExcel) {
         this.productos=productos; this.inventario=inventario; this.usuarios=usuarios;
         this.pedidos=pedidos; this.ventas=ventas; this.caja=caja;
+        this.reportesExcel = reportesExcel;
     }
 
     @GetMapping 
@@ -221,6 +228,33 @@ public class AdminController {
         modelo.addAttribute("titulo", "Historial de cierres de caja");
         modelo.addAttribute("cierres", caja.historialCierres(AccesoWeb.id(sesion)));
         return "admin/cierres";
+    }
+
+    @GetMapping("/reportes/ventas/excel")
+    public ResponseEntity<byte[]> descargarReporteVentas(HttpSession sesion,
+            @RequestParam(required=false) @DateTimeFormat(iso=DateTimeFormat.ISO.DATE) LocalDate desde,
+            @RequestParam(required=false) @DateTimeFormat(iso=DateTimeFormat.ISO.DATE) LocalDate hasta) {
+        if (desde == null) desde = LocalDate.now().minusDays(30);
+        if (hasta == null) hasta = LocalDate.now();
+        ReporteVentasVista reporte = ventas.reporteVentas(AccesoWeb.id(sesion), desde, hasta);
+        byte[] archivo = reportesExcel.exportarVentas(reporte);
+        String nombre = "ventas_" + desde + "_al_" + hasta + ".xlsx";
+        return respuestaExcel(archivo, nombre);
+    }
+
+    @GetMapping("/reportes/inventario/excel")
+    public ResponseEntity<byte[]> descargarReporteInventario(HttpSession sesion) {
+        ReporteInventarioVista reporte = inventario.reporteInventario(AccesoWeb.id(sesion));
+        byte[] archivo = reportesExcel.exportarInventario(reporte);
+        return respuestaExcel(archivo, "inventario_" + LocalDate.now() + ".xlsx");
+    }
+
+    private ResponseEntity<byte[]> respuestaExcel(byte[] archivo, String nombre) {
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + nombre + "\"")
+                .cacheControl(CacheControl.noStore())
+                .body(archivo);
     }
 
     @GetMapping("/reportes") 

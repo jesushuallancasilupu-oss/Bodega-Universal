@@ -24,6 +24,7 @@
                     <h1>Historial global de ventas</h1>
                     <p class="subline">Consulta las ventas de todos los vendedores</p>
                 </div>
+                <a class="btn btn-outline" th:href="@{/admin/reportes/ventas/excel(desde=${desde},hasta=${hasta})}">Descargar Excel (pagadas)</a>
             </div>
             <form class="card filters" method="get" th:action="@{/admin/ventas}"><label class="field">Desde<input
                         class="control" type="date" name="desde" th:value="${desde}"></label><label

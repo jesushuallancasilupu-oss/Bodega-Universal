@@ -22,8 +22,13 @@
             <div class="work-heading">
                 <div>
                     <h1>Reportes del negocio</h1>
-                    <p class="subline">Ventas pagadas e inventario del período</p>
-                </div><button class="btn btn-outline no-print" onclick="window.print()">Imprimir / guardar PDF</button>
+                    <p class="subline">Ventas pagadas del período y estado actual del inventario</p>
+                </div>
+                <div class="row no-print" style="gap:8px; flex-wrap:wrap">
+                    <button class="btn btn-outline" onclick="window.print()">Imprimir / guardar PDF</button>
+                    <a class="btn btn-outline" th:href="@{/admin/reportes/ventas/excel(desde=${desde},hasta=${hasta})}">Descargar ventas Excel</a>
+                    <a class="btn btn-outline" th:href="@{/admin/reportes/inventario/excel}">Descargar inventario Excel</a>
+                </div>
             </div>
             <form class="card filters no-print" method="get" th:action="@{/admin/reportes}"><label
                     class="field">Desde<input class="control" type="date" name="desde"

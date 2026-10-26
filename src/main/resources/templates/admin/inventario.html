@@ -23,7 +23,11 @@
                 <div>
                     <h1>Inventario y disponibilidad</h1>
                     <p class="subline">Entradas, salidas, ajustes y alertas</p>
-                </div><a class="btn btn-outline" th:href="@{/admin/inventario/movimientos}">Ver movimientos</a>
+                </div>
+                <div class="row" style="gap:8px; flex-wrap:wrap">
+                    <a class="btn btn-outline" th:href="@{/admin/reportes/inventario/excel}">Descargar Excel</a>
+                    <a class="btn btn-outline" th:href="@{/admin/inventario/movimientos}">Ver movimientos</a>
+                </div>
             </div>
             <div class="grid grid-three mb2">
                 <div class="card"><small>PRODUCTOS REGISTRADOS</small>
