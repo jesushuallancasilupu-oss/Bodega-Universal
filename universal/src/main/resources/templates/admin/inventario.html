@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="theme-color" content="#a8442a">
+    <title>Inventario · Bodega Universal</title>
+    <link rel="stylesheet" th:href="@{/css/base.css}">
+    <link rel="stylesheet" th:href="@{/css/componentes.css}">
+    <link rel="stylesheet" th:href="@{/css/navegacion.css}">
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
+    <script defer th:src="@{/js/comun.js}"></script>
+    <script defer th:src="@{/js/admin.js}"></script>
+</head>
+
+<body>
+    <div class="work-shell">
+        <aside th:replace="~{fragments/layout :: navegacionAdministrador}"></aside>
+        <main class="work-main">
+            <div class="alert success" th:if="${exito}" th:text="${exito}">Éxito</div>
+            <div class="work-heading">
+                <div>
+                    <h1>Inventario y disponibilidad</h1>
+                    <p class="subline">Entradas, salidas, ajustes y alertas</p>
+                </div><a class="btn btn-outline" th:href="@{/admin/inventario/movimientos}">Ver movimientos</a>
+            </div>
+            <div class="grid grid-three mb2">
+                <div class="card"><small>PRODUCTOS REGISTRADOS</small>
+                    <div class="kpi" th:text="${inventario.productos}"></div>
+                </div>
+                <div class="card"><small>STOCK BAJO</small>
+                    <div class="kpi terra" th:text="${inventario.bajoMinimo}"></div>
+                </div>
+                <div class="card"><small>CONTROL DE INVENTARIO</small>
+                    <div class="kpi">✓</div><small>Movimientos auditables</small>
+                </div>
+            </div>
+            <div class="grid grid-main">
+                <section>
+                    <div class="card mb2">
+                        <div class="row between">
+                            <h3>Existencias</h3><input class="control" style="max-width:230px"
+                                data-filter="#productos-stock" placeholder="Buscar producto">
+                        </div>
+                        <div class="table-scroll">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Producto</th>
+                                        <th>Stock</th>
+                                        <th>Mínimo</th>
+                                        <th>Alerta</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="productos-stock">
+                                    <tr th:each="producto : ${inventario.inventario}" data-searchable>
+                                        <td th:text="${producto.nombre}"></td>
+                                        <td th:text="${producto.stock}"></td>
+                                        <td th:text="${producto.stockMinimo}"></td>
+                                        <td><span class="pill"
+                                                th:classappend="${producto.stock <= producto.stockMinimo ? ' amber' : ' green'}"
+                                                th:text="${producto.stock <= producto.stockMinimo ? 'Bajo' : 'Normal'}"></span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="row between">
+                            <h3>Últimos movimientos</h3><a class="btn-link"
+                                th:href="@{/admin/inventario/movimientos}">Todos →</a>
+                        </div>
+                        <div class="item-line" th:each="movimiento : ${movimientos}">
+                            <div class="grow"><b th:text="${movimiento.producto}"></b><br><small
+                                    th:text="${movimiento.tipo + ' · ' + #temporals.format(movimiento.fecha,'dd/MM HH:mm')}"></small>
+                            </div><b th:text="${movimiento.cantidad}"></b>
+                        </div>
+                        <div class="empty" th:if="${#lists.isEmpty(movimientos)}"><span class="empty-icon">📦</span>No
+                            hay movimientos registrados.</div>
+                    </div>
+                </section>
+                <aside class="card">
+                    <h3>Registrar movimiento</h3>
+                    <form method="post" th:action="@{/admin/inventario/movimiento}"
+                        data-confirm="¿Confirmar este movimiento de inventario?"><input type="hidden"
+                            name="_bodega_csrf" th:value="${csrfBodega}">
+                        <div class="field"><label>Producto</label><select class="control" name="productoId" required>
+                                <option th:each="producto : ${inventario.inventario}" th:value="${producto.id}" th:text="${producto.nombre}">
+                                </option>
+                            </select></div>
+                        <div class="field mt2"><label>Tipo de movimiento</label><select class="control" name="tipo"
+                                required>
+                                <option value="ENTRADA">Entrada (+)</option>
+                                <option value="SALIDA">Salida (−)</option>
+                                <option value="AJUSTE">Ajuste (+ o −)</option>
+                            </select></div>
+                        <div class="field mt2"><label>Cantidad</label><input class="control" type="number"
+                                name="cantidad" value="1" step="1" required><small>Para ajustes usa negativo si deseas
+                                restar stock.</small></div>
+                        <div class="field mt2"><label>Motivo</label><textarea class="control" name="motivo"
+                                maxlength="255" placeholder="Ej. Recepción de mercadería" required></textarea></div>
+                        <button class="btn btn-block mt2">Registrar movimiento</button>
+                    </form>
+                </aside>
+            </div>
+        </main>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="theme-color" content="#a8442a">
+    <title>Detalle de pedido · Bodega Universal</title>
+    <link rel="stylesheet" th:href="@{/css/base.css}">
+    <link rel="stylesheet" th:href="@{/css/componentes.css}">
+    <link rel="stylesheet" th:href="@{/css/navegacion.css}">
+    <link rel="stylesheet" th:href="@{/css/cliente.css}">
+    <script defer th:src="@{/js/comun.js}"></script>
+    <script defer th:src="@{/js/publico.js}"></script>
+    <script defer th:src="@{/js/cliente.js}"></script>
+</head>
+
+<body>
+    <header th:replace="~{fragments/layout :: navegacionPublica}"></header>
+    <main class="page">
+        <div class="container">
+            <div class="alert success" th:if="${exito}" th:text="${exito}">Éxito</div><a class="back"
+                th:href="@{/cliente/pedidos}">← Mis pedidos</a>
+            <div class="row between mb2">
+                <div>
+                    <div class="eyebrow" th:text="${'PEDIDO PED-' + pedido.id}">PEDIDO</div>
+                    <h1>Detalle de pedido</h1>
+                    <p class="subline" th:text="${#temporals.format(pedido.fechaPedido, 'dd/MM/yyyy HH:mm')}"></p>
+                </div><span class="pill amber" th:text="${pedido.estado}"></span>
+            </div>
+            <div class="timeline"><span class="step" th:classappend="${pedido.estado != 'CANCELADO' ? ' done' : ''}">1.
+                    Confirmado</span><span class="step"
+                    th:classappend="${pedido.estado == 'EN_PREPARACION' or pedido.estado == 'LISTO' or pedido.estado == 'ENTREGADO' ? ' done' : ''}">2.
+                    Preparación</span><span class="step"
+                    th:classappend="${pedido.estado == 'LISTO' or pedido.estado == 'ENTREGADO' ? ' done' : ''}">3. Listo
+                    para recoger</span><span class="step"
+                    th:classappend="${pedido.estado == 'ENTREGADO' ? ' done' : ''}">4. Entregado</span></div>
+            <div class="grid grid-main">
+                <div class="card">
+                    <h3>Productos solicitados</h3>
+                    <div class="item-line" th:each="linea : ${pedido.lineas}">
+                        <div class="item-icon">
+                            <img class="item-photo" th:if="${!#strings.isEmpty(linea.imagenUrl)}"
+                                 th:src="${linea.imagenUrl}" th:alt="${'Imagen de ' + linea.producto}" loading="lazy">
+                            <span th:if="${#strings.isEmpty(linea.imagenUrl)}"
+                                  th:text="${#strings.substring(linea.producto,0,1)}">P</span>
+                        </div>
+                        <div class="grow"><b th:text="${linea.producto}"></b><br><small
+                                th:text="${linea.cantidad + ' × S/ ' + linea.precioUnitario}"></small></div><b
+                            th:text="${'S/ ' + linea.subtotal}"></b>
+                    </div>
+                    <div class="order-total"><span>Total del pedido</span><b class="money terra"
+                            th:text="${'S/ ' + pedido.total}"></b></div>
+                </div>
+                <aside class="card">
+                    <h3>Información de recojo</h3>
+                    <p
+                        th:text="${pedido.horaRecojo != null ? #temporals.format(pedido.horaRecojo, 'dd/MM/yyyy HH:mm') : 'Hora no programada'}">
+                    </p>
+                    <p>📍 Bodega Universal, Av. Federico Villarreal, Trujillo.</p>
+                    <p>Presenta el código <b th:text="${'U-' + pedido.id}"></b></p>
+                    <p class="muted tiny">Pago pendiente hasta que el vendedor lo registre.</p>
+                    <form th:if="${pedido.estado == 'PENDIENTE'}" method="post"
+                        th:action="@{|/cliente/pedidos/${pedido.id}/cancelar|}" data-confirm="¿Cancelar este pedido?">
+                        <input type="hidden" name="_bodega_csrf" th:value="${csrfBodega}"><button
+                            class="btn btn-danger btn-block">Cancelar pedido</button></form>
+                </aside>
+            </div>
+        </div>
+    </main>
+    <footer th:replace="~{fragments/layout :: footer}"></footer>
+</body>
+
+</html>

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="theme-color" content="#a8442a">
+    <title>Pedido supervisor · Bodega Universal</title>
+    <link rel="stylesheet" th:href="@{/css/base.css}">
+    <link rel="stylesheet" th:href="@{/css/componentes.css}">
+    <link rel="stylesheet" th:href="@{/css/navegacion.css}">
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
+    <script defer th:src="@{/js/comun.js}"></script>
+    <script defer th:src="@{/js/admin.js}"></script>
+</head>
+
+<body>
+    <div class="work-shell">
+        <aside th:replace="~{fragments/layout :: navegacionAdministrador}"></aside>
+        <main class="work-main">
+            <div class="alert success" th:if="${exito}" th:text="${exito}">Éxito</div><a class="back"
+                th:href="@{/admin/pedidos}">← Pedidos</a>
+            <div class="work-heading">
+                <div>
+                    <h1>Detalle del pedido</h1>
+                    <p class="subline">Vista de consulta para supervisor</p>
+                </div>
+            </div>
+            <div class="grid grid-main">
+                <div class="card">
+                    <h3 th:text="${'PED-' + pedido.id}"></h3>
+                    <div class="summary-line"><span>Cliente N.º</span><b th:text="${pedido.clienteId}"></b></div>
+                    <div class="summary-line"><span>Fecha</span><b
+                            th:text="${#temporals.format(pedido.fechaPedido,'dd/MM/yyyy HH:mm')}"></b></div>
+                    <div class="summary-line"><span>Recojo</span><b
+                            th:text="${pedido.horaRecojo != null ? #temporals.format(pedido.horaRecojo,'dd/MM/yyyy HH:mm') : 'Sin programar'}"></b>
+                    </div>
+                    <div class="summary-line"><span>Estado</span><span class="pill amber"
+                            th:text="${pedido.estado}"></span></div>
+                    <hr class="rule">
+                    <h3>Productos del pedido</h3>
+                    <div class="item-line" th:each="linea : ${pedido.lineas}">
+                        <div class="grow"><b th:text="${linea.producto}"></b><br><small
+                                th:text="${linea.cantidad + ' × S/ ' + linea.precioUnitario}"></small></div><b
+                            th:text="${'S/ ' + linea.subtotal}"></b>
+                    </div>
+                    <div class="order-total"><span>Total</span><b class="money terra"
+                            th:text="${'S/ ' + pedido.total}"></b></div>
+                </div>
+                <div class="card">
+                    <h3>Seguimiento</h3>
+                    <p>El vendedor atiende y cobra los pedidos desde su propio módulo.</p>
+                    <div class="notice">Los cambios de estado quedan gestionados por el vendedor. Esta pantalla solo
+                        consulta datos existentes.</div>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+
+</html>

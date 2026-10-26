@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="theme-color" content="#a8442a">
+    <title>Resumen supervisor · Bodega Universal</title>
+    <link rel="stylesheet" th:href="@{/css/base.css}">
+    <link rel="stylesheet" th:href="@{/css/componentes.css}">
+    <link rel="stylesheet" th:href="@{/css/navegacion.css}">
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
+    <script defer th:src="@{/js/comun.js}"></script>
+    <script defer th:src="@{/js/admin.js}"></script>
+</head>
+
+<body>
+    <div class="work-shell">
+        <aside th:replace="~{fragments/layout :: navegacionAdministrador}"></aside>
+        <main class="work-main">
+            <div class="alert success" th:if="${exito}" th:text="${exito}">Éxito</div>
+            <div class="work-heading">
+                <div>
+                    <h1>Resumen ejecutivo</h1>
+                    <p class="subline">Ventas, pedidos e inventario en tiempo real</p>
+                </div><a class="btn" th:href="@{/admin/reportes}">Ver reportes</a>
+            </div>
+            <div class="grid grid-four mb2">
+                <div class="card"><small>VENTAS PAGADAS DE HOY</small>
+                    <div class="kpi terra" th:text="${'S/ ' + reporte.total}"></div><small
+                        th:text="${reporte.cantidad + ' operaciones'}"></small>
+                </div>
+                <div class="card"><small>PEDIDOS EN CURSO</small>
+                    <div class="kpi" th:text="${#lists.size(pedidos)}"></div><small>Requieren atención</small>
+                </div>
+                <div class="card"><small>PRODUCTOS ACTIVOS</small>
+                    <div class="kpi" th:text="${inventario.productos}"></div><small>Inventario actual</small>
+                </div>
+                <div class="card"><small>ALERTAS DE STOCK</small>
+                    <div class="kpi" th:text="${#lists.size(alertas)}"></div><small>Productos bajo el mínimo</small>
+                </div>
+            </div>
+            <div class="grid grid-two">
+                <section class="card">
+                    <div class="row between">
+                        <h3>Pedidos activos</h3><a class="btn-link" th:href="@{/admin/pedidos}">Todos →</a>
+                    </div>
+                    <div class="item-line" th:each="pedido : ${pedidos}">
+                        <div class="grow"><b th:text="${'PED-' + pedido.id}"></b><br><small
+                                th:text="${'S/ ' + pedido.total}"></small></div><span class="pill amber"
+                            th:text="${pedido.estado}"></span>
+                    </div>
+                    <div class="empty" th:if="${#lists.isEmpty(pedidos)}"><span class="empty-icon">📦</span>No hay
+                        pedidos pendientes.</div>
+                </section>
+                <section class="card">
+                    <div class="row between">
+                        <h3>Atención requerida</h3><a class="btn-link" th:href="@{/admin/inventario}">Inventario →</a>
+                    </div>
+                    <div class="item-line" th:each="producto : ${alertas}">
+                        <div class="grow"><b th:text="${producto.nombre}"></b><br><small
+                                th:text="${'Actual: ' + producto.stock + ' · Mínimo: ' + producto.stockMinimo}"></small></div><span
+                            class="pill red">Stock bajo</span>
+                    </div>
+                    <div class="empty" th:if="${#lists.isEmpty(alertas)}"><span class="empty-icon">📦</span>Sin alertas.
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+</body>
+
+</html>

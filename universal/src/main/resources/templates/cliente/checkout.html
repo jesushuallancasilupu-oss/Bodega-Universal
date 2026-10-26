@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="theme-color" content="#a8442a">
+    <title>Checkout · Bodega Universal</title>
+    <link rel="stylesheet" th:href="@{/css/base.css}">
+    <link rel="stylesheet" th:href="@{/css/componentes.css}">
+    <link rel="stylesheet" th:href="@{/css/navegacion.css}">
+    <link rel="stylesheet" th:href="@{/css/cliente.css}">
+    <script defer th:src="@{/js/comun.js}"></script>
+    <script defer th:src="@{/js/publico.js}"></script>
+    <script defer th:src="@{/js/cliente.js}"></script>
+</head>
+
+<body>
+    <header th:replace="~{fragments/layout :: navegacionPublica}"></header>
+    <main class="page">
+        <div class="container">
+            <div class="alert success" th:if="${exito}" th:text="${exito}">Éxito</div><a class="back"
+                th:href="@{/cliente/carrito}">← Volver al carrito</a>
+            <div class="eyebrow">PASO 2 DE 3</div>
+            <h1>Confirmar pedido</h1>
+            <p class="subline">Selecciona cuándo recogerás los productos. El pago es presencial.</p>
+            <div class="grid grid-main">
+                <div class="card">
+                    <h3>Recojo y contacto</h3>
+                    <div class="alert warning">El stock se validará al confirmar el pedido y nuevamente al cobrarlo en
+                        tienda. No se reserva automáticamente.</div>
+                    <p>📍 <b>Bodega Universal</b> — Av. Federico Villarreal, Trujillo, Perú.</p>
+                    <p>👤 <span th:text="${usuarioWeb.nombres + ' ' + usuarioWeb.apellidos}">Cliente</span> · <span
+                            th:text="${usuarioWeb.correo}"></span></p>
+                    <form method="post" th:action="@{/cliente/checkout}"
+                        data-confirm="¿Confirmar el pedido para recoger en tienda y pagar al recibirlo?"><input
+                            type="hidden" name="_bodega_csrf" th:value="${csrfBodega}">
+                        <div class="field"><label for="horaRecojo">Fecha y hora de recojo</label><input class="control"
+                                id="horaRecojo" type="datetime-local" name="horaRecojo" required><small>Elige una fecha
+                                y hora futuras. Coordina la disponibilidad real con la tienda.</small></div><button
+                            class="btn btn-block form-action">Confirmar pedido sin pagar</button>
+                    </form>
+                </div>
+                <aside class="card">
+                    <h3>Resumen</h3>
+                    <div class="summary-line" th:each="linea : ${pedido.lineas}"><span
+                            th:text="${linea.cantidad + ' × ' + linea.producto}"></span><b th:text="${'S/ ' + linea.subtotal}"></b>
+                    </div>
+                    <div class="order-total"><b>Total a pagar en tienda</b><b class="money terra"
+                            th:text="${'S/ ' + pedido.total}"></b></div>
+                </aside>
+            </div>
+        </div>
+    </main>
+    <footer th:replace="~{fragments/layout :: footer}"></footer>
+</body>
+
+</html>

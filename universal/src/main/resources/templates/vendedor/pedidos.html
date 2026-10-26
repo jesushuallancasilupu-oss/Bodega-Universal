@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="theme-color" content="#a8442a">
+    <title>Pedidos por preparar · Bodega Universal</title>
+    <link rel="stylesheet" th:href="@{/css/base.css}">
+    <link rel="stylesheet" th:href="@{/css/componentes.css}">
+    <link rel="stylesheet" th:href="@{/css/navegacion.css}">
+    <link rel="stylesheet" th:href="@{/css/vendedor.css}">
+    <script defer th:src="@{/js/comun.js}"></script>
+    <script defer th:src="@{/js/vendedor.js}"></script>
+</head>
+
+<body>
+    <div class="work-shell">
+        <aside th:replace="~{fragments/layout :: navegacionVendedor}"></aside>
+        <main class="work-main">
+            <div class="alert success" th:if="${exito}" th:text="${exito}">Éxito</div>
+            <div class="work-heading">
+                <div>
+                    <h1>Pedidos por preparar</h1>
+                    <p class="subline">Pedidos realizados por los clientes</p>
+                </div><a class="btn btn-outline" th:href="@{/vendedor/pedidos}">Actualizar</a>
+            </div>
+            <div class="card filters"><input class="control grow" placeholder="Buscar por código o estado"
+                    data-filter="#ventas-pedidos"><a class="chip" th:href="@{/vendedor/pedidos}">Todos</a><a
+                    class="chip" th:href="@{/vendedor/pedidos(estado='PENDIENTE')}">Nuevos</a><a class="chip"
+                    th:href="@{/vendedor/pedidos(estado='EN_PREPARACION')}">Preparando</a><a class="chip"
+                    th:href="@{/vendedor/pedidos(estado='LISTO')}">Listos</a></div>
+            <div class="table-scroll">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Pedido</th>
+                            <th>Cliente</th>
+                            <th>Fecha</th>
+                            <th>Hora de recojo</th>
+                            <th>Productos</th>
+                            <th>Total</th>
+                            <th>Estado</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody id="ventas-pedidos">
+                        <tr th:each="pedido : ${pedidos}" data-searchable>
+                            <td><b th:text="${'PED-' + pedido.id}"></b></td>
+                            <td th:text="${clientesPorId.get(pedido.clienteId) ?: 'Cliente #' + pedido.clienteId}"></td>
+                            <td th:text="${#temporals.format(pedido.fechaPedido,'dd/MM HH:mm')}"></td>
+                            <td th:text="${pedido.horaRecojo != null ? #temporals.format(pedido.horaRecojo,'dd/MM HH:mm') : '—'}">
+                            </td>
+                            <td th:text="${#lists.size(pedido.lineas)}"></td>
+                            <td th:text="${'S/ ' + pedido.total}"></td>
+                            <td><span class="pill amber" th:text="${pedido.estado}"></span></td>
+                            <td><a class="btn-link" th:href="@{|/vendedor/pedidos/${pedido.id}|}">Ver / atender →</a></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="empty" th:if="${#lists.isEmpty(pedidos)}"><span class="empty-icon">📦</span>No hay pedidos
+                    por atender.</div>
+            </div>
+        </main>
+    </div>
+</body>
+
+</html>

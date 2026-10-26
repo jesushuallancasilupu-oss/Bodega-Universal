@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="theme-color" content="#a8442a">
+    <title>Iniciar sesión · Bodega Universal</title>
+    <link rel="stylesheet" th:href="@{/css/base.css}">
+    <link rel="stylesheet" th:href="@{/css/componentes.css}">
+    <link rel="stylesheet" th:href="@{/css/navegacion.css}">
+    <link rel="stylesheet" th:href="@{/css/acceso.css}">
+    <script defer th:src="@{/js/comun.js}"></script>
+    <script defer th:src="@{/js/publico.js}"></script>
+</head>
+
+<body>
+    <header th:replace="~{fragments/layout :: navegacionPublica}"></header>
+    <main class="auth-outer">
+        <div class="alert success" th:if="${exito}" th:text="${exito}">Éxito</div>
+        <div class="eyebrow">ACCESO UNIFICADO</div>
+        <h1>Bienvenido de nuevo</h1>
+        <p class="subline">Accede con tu cuenta de cliente, vendedor o supervisor.</p>
+        <div class="card auth-box">
+            <div class="alert warning" th:if="${param.requerido}">Inicia sesión para continuar.</div>
+            <form th:action="@{/ingresar}" method="post"><input type="hidden" name="_bodega_csrf"
+                    th:value="${csrfBodega}">
+                <div class="field"><label for="email">Correo electrónico</label><input id="email" class="control"
+                        name="correo" type="email" placeholder="tu@correo.com" autocomplete="username" maxlength="100"
+                        required></div>
+                <div class="field"><label for="pw">Contraseña</label><input id="pw" class="control" type="password"
+                        name="contrasena" autocomplete="current-password" required></div><button class="btn btn-block"
+                    type="submit">Iniciar sesión</button>
+            </form>
+        </div>
+        <div class="role-tile"><b>¿Nuevo cliente?</b>
+            <p class="muted tiny mb0">Crea una cuenta para hacer tus pedidos y revisar su estado.</p><a class="btn-link"
+                th:href="@{/registrarse}">Crear cuenta de cliente →</a>
+        </div>
+        <div class="role-tile"><b>Vendedor o supervisor</b>
+            <p class="muted tiny mb0">Tu cuenta es creada por el responsable del negocio. No existe autorregistro
+                interno.</p>
+        </div>
+    </main>
+    <footer th:replace="~{fragments/layout :: footer}"></footer>
+</body>
+
+</html>
