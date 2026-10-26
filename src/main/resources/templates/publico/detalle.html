@@ -11,7 +11,6 @@
     <link rel="stylesheet" th:href="@{/css/navegacion.css}">
     <link rel="stylesheet" th:href="@{/css/publico.css}">
     <script defer th:src="@{/js/comun.js}"></script>
-    <script defer th:src="@{/js/publico.js}"></script>
 </head>
 
 <body>
@@ -37,14 +36,7 @@
                     <hr class="rule">
                     <div class="summary-line"><span>Producto N.º</span><b th:text="${producto.id}">1</b></div>
                     <div class="summary-line"><span>Stock disponible</span><b th:text="${producto.stock}">1</b></div>
-                    <form method="post" th:if="${producto.disponible}" th:action="@{/cliente/carrito/agregar}"
-                        data-add-to-cart><input type="hidden" name="_bodega_csrf" th:value="${csrfBodega}"><input
-                            type="hidden" name="productoId" th:value="${producto.id}">
-                        <div class="field"><label>Cantidad</label><input class="control" type="number" name="cantidad"
-                                th:min="${producto.cantidadPorVenta}" th:step="${producto.cantidadPorVenta}"
-                                th:max="${producto.stock}" th:value="${producto.cantidadPorVenta}" required></div><button
-                            class="btn btn-block form-action" type="submit">Agregar al carrito</button>
-                    </form>
+                    <div class="alert warning mt2">Las compras estarán disponibles en la siguiente etapa.</div>
                     <div class="alert warning mt2">Pedido para recoger en tienda. El stock se confirma al realizar la
                         venta.</div>
                 </div>
