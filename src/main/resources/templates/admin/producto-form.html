@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="theme-color" content="#a8442a">
+    <title>Formulario de producto · Bodega Universal</title>
+    <link rel="stylesheet" th:href="@{/css/base.css}">
+    <link rel="stylesheet" th:href="@{/css/componentes.css}">
+    <link rel="stylesheet" th:href="@{/css/navegacion.css}">
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
+    <script defer th:src="@{/js/comun.js}"></script>
+    <script defer th:src="@{/js/admin.js}"></script>
+</head>
+
+<body>
+    <div class="work-shell">
+        <aside th:replace="~{fragments/layout :: navegacionAdministrador}"></aside>
+        <main class="work-main">
+            <div class="alert success" th:if="${exito}" th:text="${exito}">Éxito</div><a class="back"
+                th:href="@{/admin/productos}">← Volver a productos</a>
+            <div class="work-heading">
+                <div>
+                    <h1 th:text="${producto == null ? 'Nuevo producto' : 'Editar producto'}">Producto</h1>
+                    <p class="subline">Completa la información y luego registra stock desde Inventario.</p>
+                </div><span class="pill green" th:if="${producto != null and producto.estado == 1}">Activo</span>
+            </div>
+            <div class="grid grid-main">
+                <section class="card">
+                    <form method="post"
+                        th:action="${producto == null} ? @{/admin/productos/nuevo} : @{|/admin/productos/${producto.id}/editar|}">
+                        <input type="hidden" name="_bodega_csrf" th:value="${csrfBodega}">
+                        <h3>Información general</h3>
+                        <div class="form-grid">
+                            <div class="field"><label>Nombre</label><input class="control" type="text" name="nombre"
+                                    maxlength="100" th:value="${producto?.nombre}" required></div>
+                            <div class="field"><label>Categoría</label><select class="control" name="categoriaId"
+                                    required>
+                                    <option th:each="categoria : ${categorias}" th:value="${categoria.id}" th:text="${categoria.nombre}"
+                                        th:selected="${producto != null and producto.categoria == categoria.nombre}"></option>
+                                </select></div>
+                            <div class="field wide"><label>Descripción</label><textarea class="control"
+                                    name="descripcion" maxlength="255" th:text="${producto?.descripcion}"></textarea>
+                            </div>
+                            <div class="field"><label>Precio por unidad (S/)</label><input class="control" type="number"
+                                    min="0.01" step="0.01" name="precio" th:value="${producto?.precio}" required><small th:if="${producto != null and producto.cantidadPorVenta > 1}" th:text="${'Venta por pares: ' + producto.cantidadPorVenta + ' unidades por S/ ' + (producto.precio * producto.cantidadPorVenta)}"></small></div>
+                            <div class="field"><label>Stock mínimo</label><input class="control" type="number" min="0"
+                                    step="1" name="stockMinimo"
+                                    th:value="${producto == null ? 0 : producto.stockMinimo}" required></div>
+                        </div><button class="btn mt2" th:if="${producto == null or producto.estado == 1}">Guardar
+                            producto</button>
+                        <div class="alert warning mt2" th:if="${producto != null and producto.estado != 1}">Producto
+                            retirado. No puede editarse sin reactivación desde la lógica de negocio.</div>
+                    </form>
+                </section>
+                <aside class="stack">
+                    <div class="card">
+                        <h3>Inventario y disponibilidad</h3>
+                        <div th:if="${producto != null}">
+                            <div class="summary-line"><span>Stock actual</span><b th:text="${producto.stock}"></b></div>
+                            <div class="summary-line"><span>Stock mínimo</span><b th:text="${producto.stockMinimo}"></b>
+                            </div><span class="pill"
+                                th:classappend="${producto.stock <= producto.stockMinimo ? ' amber' : ' green'}"
+                                th:text="${producto.stock <= producto.stockMinimo ? 'Stock bajo' : 'Stock suficiente'}"></span><a
+                                class="btn btn-outline btn-block mt2" th:href="@{/admin/inventario}">Registrar
+                                movimiento</a>
+                        </div>
+                        <p class="muted tiny" th:if="${producto == null}">Los nuevos productos comienzan con stock 0.
+                        </p>
+                    </div>
+                    <div class="card">
+                        <h3>Imagen del producto</h3>
+                        <img class="admin-product-preview"
+                            th:if="${producto != null and !#strings.isEmpty(producto.imagenUrl)}"
+                            th:src="${producto.imagenUrl}" th:alt="${'Imagen de ' + producto.nombre}" loading="lazy">
+                        <div class="notice" th:if="${producto == null or #strings.isEmpty(producto.imagenUrl)}">
+                            Sin imagen asignada por ahora. Las rutas se guardan en la columna imagen_url de MySQL.
+                        </div>
+                        <p class="muted tiny mt2" th:if="${producto != null and !#strings.isEmpty(producto.imagenUrl)}"
+                            th:text="${producto.imagenUrl}">Ruta de la imagen</p>
+                    </div>
+                </aside>
+            </div>
+        </main>
+    </div>
+</body>
+
+</html>

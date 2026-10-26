@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="theme-color" content="#a8442a">
+    <title>Detalle de producto · Bodega Universal</title>
+    <link rel="stylesheet" th:href="@{/css/base.css}">
+    <link rel="stylesheet" th:href="@{/css/componentes.css}">
+    <link rel="stylesheet" th:href="@{/css/navegacion.css}">
+    <link rel="stylesheet" th:href="@{/css/publico.css}">
+    <script defer th:src="@{/js/comun.js}"></script>
+    <script defer th:src="@{/js/publico.js}"></script>
+</head>
+
+<body>
+    <header th:replace="~{fragments/layout :: navegacionPublica}"></header>
+    <main class="page">
+        <div class="container">
+            <div class="alert success" th:if="${exito}" th:text="${exito}">Éxito</div><a class="back"
+                th:href="@{/productos}">← Volver al catálogo</a>
+            <div class="grid grid-main">
+                <div class="product-image detail-image"
+                    th:classappend="${producto.categoria == 'Panadería' ? ' pan' : (producto.categoria == 'Pastelería' ? ' past' : ' mini')}">
+                    <img class="product-photo" th:if="${!#strings.isEmpty(producto.imagenUrl)}"
+                        th:src="${producto.imagenUrl}" th:alt="${'Imagen de ' + producto.nombre}" decoding="async"><span
+                        class="product-initial" th:if="${#strings.isEmpty(producto.imagenUrl)}"
+                        th:text="${#strings.substring(producto.nombre,0,1)}">P</span></div>
+                <div class="card">
+                    <div class="row between"><span class="eyebrow" th:text="${producto.categoria}">Categoría</span><span
+                            class="pill" th:classappend="${producto.disponible ? ' green' : ' red'}"
+                            th:text="${producto.disponible ? 'Disponible' : 'Agotado'}">Disponible</span></div>
+                    <h1 th:text="${producto.nombre}">Producto</h1>
+                    <div class="money terra" th:text="${producto.cantidadPorVenta > 1 ? producto.cantidadPorVenta + ' por S/ ' + (producto.precio * producto.cantidadPorVenta) : 'S/ ' + producto.precio}">Precio</div>
+                    <p class="muted mt2" th:text="${producto.descripcion}">Descripción</p>
+                    <hr class="rule">
+                    <div class="summary-line"><span>Producto N.º</span><b th:text="${producto.id}">1</b></div>
+                    <div class="summary-line"><span>Stock disponible</span><b th:text="${producto.stock}">1</b></div>
+                    <form method="post" th:if="${producto.disponible}" th:action="@{/cliente/carrito/agregar}"
+                        data-add-to-cart><input type="hidden" name="_bodega_csrf" th:value="${csrfBodega}"><input
+                            type="hidden" name="productoId" th:value="${producto.id}">
+                        <div class="field"><label>Cantidad</label><input class="control" type="number" name="cantidad"
+                                th:min="${producto.cantidadPorVenta}" th:step="${producto.cantidadPorVenta}"
+                                th:max="${producto.stock}" th:value="${producto.cantidadPorVenta}" required></div><button
+                            class="btn btn-block form-action" type="submit">Agregar al carrito</button>
+                    </form>
+                    <div class="alert warning mt2">Pedido para recoger en tienda. El stock se confirma al realizar la
+                        venta.</div>
+                </div>
+            </div>
+        </div>
+    </main>
+    <footer th:replace="~{fragments/layout :: footer}"></footer>
+</body>
+
+</html>

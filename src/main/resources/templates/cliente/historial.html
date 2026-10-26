@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="theme-color" content="#a8442a">
+    <title>Mis pedidos · Bodega Universal</title>
+    <link rel="stylesheet" th:href="@{/css/base.css}">
+    <link rel="stylesheet" th:href="@{/css/componentes.css}">
+    <link rel="stylesheet" th:href="@{/css/navegacion.css}">
+    <link rel="stylesheet" th:href="@{/css/cliente.css}">
+    <script defer th:src="@{/js/comun.js}"></script>
+    <script defer th:src="@{/js/publico.js}"></script>
+    <script defer th:src="@{/js/cliente.js}"></script>
+</head>
+
+<body>
+    <header th:replace="~{fragments/layout :: navegacionPublica}"></header>
+    <main class="page">
+        <div class="container">
+            <div class="alert success" th:if="${exito}" th:text="${exito}">Éxito</div>
+            <div class="row between mb2">
+                <div>
+                    <div class="eyebrow">MIS PEDIDOS</div>
+                    <h1>Historial de pedidos</h1>
+                    <p class="subline">Consulta el estado y los productos de tus pedidos.</p>
+                </div><a class="btn" th:href="@{/productos}">Nuevo pedido</a>
+            </div>
+            <div class="card mb2"><input class="control" placeholder="Buscar por número o estado"
+                    data-filter="#lista-pedidos" aria-label="Buscar pedidos"></div>
+            <div class="table-scroll">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Pedido</th>
+                            <th>Fecha</th>
+                            <th>Recojo</th>
+                            <th>Total</th>
+                            <th>Estado</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody id="lista-pedidos">
+                        <tr th:each="pedido : ${pedidos}" data-searchable>
+                            <td th:text="${'PED-' + pedido.id}"></td>
+                            <td th:text="${#temporals.format(pedido.fechaPedido, 'dd/MM/yyyy HH:mm')}"></td>
+                            <td
+                                th:text="${pedido.horaRecojo != null ? #temporals.format(pedido.horaRecojo, 'dd/MM HH:mm') : 'No programado'}">
+                            </td>
+                            <td th:text="${'S/ ' + pedido.total}"></td>
+                            <td><span class="pill" th:text="${pedido.estado}"></span></td>
+                            <td><a class="btn-link" th:href="@{|/cliente/pedidos/${pedido.id}|}">Ver detalle →</a></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="empty" th:if="${#lists.isEmpty(pedidos)}"><span class="empty-icon">📦</span>Aún no tienes
+                    pedidos confirmados.</div>
+            </div>
+        </div>
+    </main>
+    <footer th:replace="~{fragments/layout :: footer}"></footer>
+</body>
+
+</html>

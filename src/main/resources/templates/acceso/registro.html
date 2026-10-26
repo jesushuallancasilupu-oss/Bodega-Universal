@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="theme-color" content="#a8442a">
+    <title>Registrarse · Bodega Universal</title>
+    <link rel="stylesheet" th:href="@{/css/base.css}">
+    <link rel="stylesheet" th:href="@{/css/componentes.css}">
+    <link rel="stylesheet" th:href="@{/css/navegacion.css}">
+    <link rel="stylesheet" th:href="@{/css/acceso.css}">
+    <script defer th:src="@{/js/comun.js}"></script>
+    <script defer th:src="@{/js/publico.js}"></script>
+</head>
+
+<body>
+    <header th:replace="~{fragments/layout :: navegacionPublica}"></header>
+    <main class="auth-outer">
+        <div class="alert success" th:if="${exito}" th:text="${exito}">Éxito</div>
+        <div class="eyebrow">EXCLUSIVO PARA CLIENTES</div>
+        <h1>Crea tu cuenta</h1>
+        <p class="subline">Compra más rápido, consulta tus pedidos y reserva una hora para recoger.</p>
+        <div class="card auth-box">
+            <div class="alert warning"><b>Registro de clientes.</b> Solo el supervisor puede crear vendedores.</div>
+            <form th:action="@{/registrarse}" method="post"><input type="hidden" name="_bodega_csrf"
+                    th:value="${csrfBodega}">
+                <div class="form-grid">
+                    <div class="field"><label>Nombres</label><input class="control" name="nombres" maxlength="80"
+                            required></div>
+                    <div class="field"><label>Apellidos</label><input class="control" name="apellidos" maxlength="80"
+                            required></div>
+                    <div class="field wide"><label>DNI (8 dígitos)</label><input class="control" name="dni"
+                            pattern="[0-9]{8}" maxlength="8" required></div>
+                    <div class="field wide"><label>Teléfono</label><input class="control" name="telefono" maxlength="15"
+                            required></div>
+                    <div class="field wide"><label>Correo electrónico</label><input class="control" type="email"
+                            name="correo" maxlength="100" required></div>
+                    <div class="field"><label>Contraseña (mínimo 8 caracteres)</label><input class="control"
+                            type="password" name="contrasena" minlength="8" maxlength="72" required></div>
+                    <div class="field"><label>Confirmar contraseña</label><input class="control" type="password"
+                            name="confirmar" minlength="8" maxlength="72" required></div>
+                </div><button class="btn btn-block form-action" type="submit">Crear cuenta de cliente</button>
+            </form>
+        </div>
+        <p class="center mt2">¿Ya tienes cuenta? <a class="btn-link" th:href="@{/ingresar}">Iniciar sesión</a></p>
+    </main>
+    <footer th:replace="~{fragments/layout :: footer}"></footer>
+</body>
+
+</html>

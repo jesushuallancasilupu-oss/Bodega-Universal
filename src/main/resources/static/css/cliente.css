@@ -1,0 +1,38 @@
+.stepper {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 12px 0
+}
+
+.timeline {
+    display: flex;
+    justify-content: space-between;
+    margin: 20px 0 28px;
+    gap: 8px
+}
+
+.timeline .step {
+    flex: 1;
+    padding: 13px 9px;
+    text-align: center;
+    border-radius: 10px;
+    background: #efe9e2;
+    font-size: 11px;
+    color: var(--muted)
+}
+
+.timeline .step.done {
+    background: var(--green-bg);
+    color: var(--green);
+    font-weight: 700
+}
+
+@media (max-width:610px) {
+.timeline {
+        flex-wrap: wrap
+    }
+.timeline .step {
+        flex-basis: 44%
+    }
+}

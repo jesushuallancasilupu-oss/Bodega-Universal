@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="theme-color" content="#a8442a">
+    <title>Reportes · Bodega Universal</title>
+    <link rel="stylesheet" th:href="@{/css/base.css}">
+    <link rel="stylesheet" th:href="@{/css/componentes.css}">
+    <link rel="stylesheet" th:href="@{/css/navegacion.css}">
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
+    <script defer th:src="@{/js/comun.js}"></script>
+    <script defer th:src="@{/js/admin.js}"></script>
+</head>
+
+<body>
+    <div class="work-shell">
+        <aside th:replace="~{fragments/layout :: navegacionAdministrador}"></aside>
+        <main class="work-main">
+            <div class="alert success" th:if="${exito}" th:text="${exito}">Éxito</div>
+            <div class="work-heading">
+                <div>
+                    <h1>Reportes del negocio</h1>
+                    <p class="subline">Ventas pagadas e inventario del período</p>
+                </div><button class="btn btn-outline no-print" onclick="window.print()">Imprimir / guardar PDF</button>
+            </div>
+            <form class="card filters no-print" method="get" th:action="@{/admin/reportes}"><label
+                    class="field">Desde<input class="control" type="date" name="desde"
+                        th:value="${desde}"></label><label class="field">Hasta<input class="control" type="date"
+                        name="hasta" th:value="${hasta}"></label><button class="btn">Aplicar fechas</button></form>
+            <div class="grid grid-three mb2">
+                <div class="card"><small>VENTAS PAGADAS</small>
+                    <div class="kpi terra" th:text="${'S/ ' + reporte.total}"></div>
+                </div>
+                <div class="card"><small>TRANSACCIONES PAGADAS</small>
+                    <div class="kpi" th:text="${reporte.cantidad}"></div>
+                </div>
+                <div class="card"><small>PRODUCTOS BAJO MÍNIMO</small>
+                    <div class="kpi" th:text="${inventario.bajoMinimo}"></div>
+                </div>
+            </div>
+            <div class="grid grid-two">
+                <div class="card">
+                    <h3>Ventas del período</h3>
+                    <div class="item-line" th:each="venta : ${reporte.ventas}">
+                        <div class="grow"><b th:text="${'Venta V-' + venta.id}"></b><br><small
+                                th:text="${#temporals.format(venta.fecha,'dd/MM/yyyy HH:mm')}"></small></div><b
+                            th:text="${'S/ ' + venta.total}"></b>
+                    </div>
+                    <div class="empty" th:if="${#lists.isEmpty(reporte.ventas)}"><span class="empty-icon">📦</span>Sin
+                        ventas pagadas en este período.</div>
+                </div>
+                <div class="card">
+                    <h3>Resumen de inventario</h3>
+                    <div class="item-line" th:each="producto : ${inventario.inventario}">
+                        <div class="grow"><b th:text="${producto.nombre}"></b><br><small
+                                th:text="${'Mínimo: ' + producto.stockMinimo}"></small></div><span class="pill"
+                            th:classappend="${producto.stock <= producto.stockMinimo ? ' amber' : ' green'}"
+                            th:text="${producto.stock + ' unid.'}"></span>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+
+</html>

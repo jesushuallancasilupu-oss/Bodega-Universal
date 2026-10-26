@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="theme-color" content="#a8442a">
+    <title>Catálogo · Bodega Universal</title>
+    <link rel="stylesheet" th:href="@{/css/base.css}">
+    <link rel="stylesheet" th:href="@{/css/componentes.css}">
+    <link rel="stylesheet" th:href="@{/css/navegacion.css}">
+    <link rel="stylesheet" th:href="@{/css/publico.css}">
+    <script defer th:src="@{/js/comun.js}"></script>
+    <script defer th:src="@{/js/publico.js}"></script>
+</head>
+
+<body>
+    <header th:replace="~{fragments/layout :: navegacionPublica}"></header>
+    <main class="page">
+        <div class="container">
+            <div class="alert success" th:if="${exito}" th:text="${exito}">Éxito</div>
+            <div class="eyebrow">CATÁLOGO COMPARTIDO</div>
+            <h1>Todos los productos</h1>
+            <p class="subline">Consulta los precios y el stock disponibles en Bodega Universal.</p>
+            <form method="get" th:action="@{/productos}" class="card filters"><input type="search" class="control grow"
+                    name="buscar" placeholder="Buscar por nombre" th:value="${buscar}"
+                    aria-label="Buscar productos"><select class="control" name="categoria">
+                    <option value="">Todas las categorías</option>
+                    <option th:each="categoria : ${categorias}" th:value="${categoria.id}" th:text="${categoria.nombre}"
+                        th:selected="${categoriaActiva != null and categoriaActiva == categoria.id}">Categoría</option>
+                </select><button class="btn" type="submit">Buscar / filtrar</button><a class="btn btn-outline"
+                    th:href="@{/productos}">Limpiar</a></form>
+            <div class="row between mb2"><strong
+                    th:text="${#lists.size(productos) + ' productos encontrados'}">Productos encontrados</strong><span
+                    class="muted tiny">Las existencias pueden cambiar antes del cobro</span></div>
+            <div class="grid grid-four">
+                <th:block th:each="producto : ${productos}">
+                    <div th:replace="~{fragments/layout :: tarjetaProducto(${producto})}"></div>
+                </th:block>
+            </div>
+            <div class="empty" th:if="${#lists.isEmpty(productos)}"><span class="empty-icon">📦</span>No se encontraron
+                productos. Cambia la búsqueda.</div>
+        </div>
+    </main>
+    <footer th:replace="~{fragments/layout :: footer}"></footer>
+</body>
+
+</html>

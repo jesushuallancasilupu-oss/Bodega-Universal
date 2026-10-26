@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Operación no completada · Bodega Universal</title>
+    <link rel="stylesheet" th:href="@{/css/base.css}">
+    <link rel="stylesheet" th:href="@{/css/componentes.css}">
+    <link rel="stylesheet" th:href="@{/css/navegacion.css}">
+    <link rel="stylesheet" th:href="@{/css/acceso.css}">
+</head>
+
+<body>
+    <header th:replace="~{fragments/layout :: navegacionPublica}"></header>
+    <main class="auth-outer">
+        <div class="card auth-box">
+            <div class="eyebrow">AVISO DEL SISTEMA</div>
+            <h1 th:text="${titulo != null ? titulo : 'Ha ocurrido un error'}">Error</h1>
+            <div class="alert error"
+                th:text="${mensaje != null ? mensaje : 'No pudimos completar la solicitud. Inténtalo de nuevo.'}"></div>
+            <button class="btn btn-outline" type="button" onclick="history.back()">← Volver</button> <a class="btn"
+                th:href="@{/}">Ir al inicio</a>
+        </div>
+    </main>
+    <footer th:replace="~{fragments/layout :: footer}"></footer>
+</body>
+
+</html>

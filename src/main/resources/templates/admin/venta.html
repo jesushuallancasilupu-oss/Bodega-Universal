@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="theme-color" content="#a8442a">
+    <title>Detalle de venta · Bodega Universal</title>
+    <link rel="stylesheet" th:href="@{/css/base.css}">
+    <link rel="stylesheet" th:href="@{/css/componentes.css}">
+    <link rel="stylesheet" th:href="@{/css/navegacion.css}">
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
+    <script defer th:src="@{/js/comun.js}"></script>
+    <script defer th:src="@{/js/admin.js}"></script>
+</head>
+
+<body>
+    <div class="work-shell">
+        <aside th:replace="~{fragments/layout :: navegacionAdministrador}"></aside>
+        <main class="work-main">
+            <div class="alert success" th:if="${exito}" th:text="${exito}">Éxito</div><a class="back"
+                th:href="@{/admin/ventas}">← Ventas</a>
+            <div class="work-heading">
+                <div>
+                    <h1>Detalle de la venta</h1>
+                    <p class="subline">Comprobante y pagos registrados</p>
+                </div>
+            </div>
+            <div class="grid grid-main">
+                <section class="card">
+                    <h3 th:text="${'Venta V-' + venta.id}"></h3>
+                    <div class="summary-line"><span>Fecha</span><b
+                            th:text="${#temporals.format(venta.fecha,'dd/MM/yyyy HH:mm')}"></b></div>
+                    <div class="summary-line"><span>Vendedor N.º</span><b th:text="${venta.vendedorId}"></b></div>
+                    <div class="summary-line"><span>Tipo</span><b th:text="${venta.tipo}"></b></div>
+                    <div class="summary-line"><span>Estado</span><span class="pill green"
+                            th:text="${venta.pagada ? 'Pagada' : 'Pendiente de pago'}"></span></div>
+                    <hr class="rule">
+                    <h3>Productos vendidos</h3>
+                    <div class="item-line" th:each="linea : ${venta.lineas}">
+                        <div class="grow"><b th:text="${linea.producto}"></b><br><small
+                                th:text="${linea.cantidad + ' × S/ ' + linea.precioUnitario}"></small></div><b
+                            th:text="${'S/ ' + linea.subtotal}"></b>
+                    </div>
+                    <div class="order-total"><span>Total</span><b class="money terra"
+                            th:text="${'S/ ' + venta.total}"></b></div>
+                </section>
+                <aside class="card">
+                    <h3>Pago y comprobante</h3>
+                    <div class="summary-line" th:if="${pago != null}"><span>Método</span><b
+                            th:text="${pago.metodo}"></b></div>
+                    <div class="summary-line" th:if="${pago != null}"><span>Recibido</span><b
+                            th:text="${'S/ ' + pago.monto}"></b></div>
+                    <div class="summary-line" th:if="${pago != null}"><span>Vuelto</span><b
+                            th:text="${'S/ ' + pago.vuelto}"></b></div>
+                    <div class="summary-line" th:if="${comprobante != null}"><span>Ticket</span><b
+                            th:text="${comprobante.numero}"></b></div>
+                    <div class="notice mt2">Documento interno del sistema, no comprobante electrónico SUNAT.</div>
+                </aside>
+            </div>
+        </main>
+    </div>
+</body>
+
+</html>

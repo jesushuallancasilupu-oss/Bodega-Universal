@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="theme-color" content="#a8442a">
+    <title>Mi cuenta · Bodega Universal</title>
+    <link rel="stylesheet" th:href="@{/css/base.css}">
+    <link rel="stylesheet" th:href="@{/css/componentes.css}">
+    <link rel="stylesheet" th:href="@{/css/navegacion.css}">
+    <link rel="stylesheet" th:href="@{/css/cliente.css}">
+    <script defer th:src="@{/js/comun.js}"></script>
+    <script defer th:src="@{/js/publico.js}"></script>
+    <script defer th:src="@{/js/cliente.js}"></script>
+</head>
+
+<body>
+    <header th:replace="~{fragments/layout :: navegacionPublica}"></header>
+    <main class="page">
+        <div class="container">
+            <div class="alert success" th:if="${exito}" th:text="${exito}">Éxito</div>
+            <div class="eyebrow">PERFIL DE CLIENTE</div>
+            <h1>Mi cuenta</h1>
+            <p class="subline">Consulta tu información y tus pedidos.</p>
+            <div class="grid grid-main">
+                <div class="card">
+                    <div class="row mb2">
+                        <div class="item-icon" th:text="${#strings.substring(usuarioWeb.nombres,0,1)}">A</div>
+                        <div>
+                            <h3 th:text="${usuarioWeb.nombres + ' ' + usuarioWeb.apellidos}"></h3><span
+                                class="pill green">Cliente activo</span>
+                        </div>
+                    </div>
+                    <hr class="rule">
+                    <p><b>Nombres</b><br><span th:text="${usuarioWeb.nombres}"></span></p>
+                    <p><b>Apellidos</b><br><span th:text="${usuarioWeb.apellidos}"></span></p>
+                    <p><b>Correo</b><br><span th:text="${usuarioWeb.correo}"></span></p>
+                    <div class="notice">La edición de datos personales no forma parte del backend actual. Para evitar un
+                        formulario sin funcionamiento, aquí solo se muestran los datos registrados.</div>
+                </div>
+                <aside class="card">
+                    <h3>Mis pedidos</h3>
+                    <div class="kpi" th:text="${pedidos}"></div><a class="btn btn-block"
+                        th:href="@{/cliente/pedidos}">Ver pedidos</a>
+                    <form method="post" th:action="@{/salir}" class="mt2"><input type="hidden" name="_bodega_csrf"
+                            th:value="${csrfBodega}"><button class="btn btn-outline btn-block">Cerrar sesión</button>
+                    </form>
+                </aside>
+            </div>
+        </div>
+    </main>
+    <footer th:replace="~{fragments/layout :: footer}"></footer>
+</body>
+
+</html>

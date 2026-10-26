@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="theme-color" content="#a8442a">
+    <title>Clientes · Bodega Universal</title>
+    <link rel="stylesheet" th:href="@{/css/base.css}">
+    <link rel="stylesheet" th:href="@{/css/componentes.css}">
+    <link rel="stylesheet" th:href="@{/css/navegacion.css}">
+    <link rel="stylesheet" th:href="@{/css/vendedor.css}">
+    <script defer th:src="@{/js/comun.js}"></script>
+    <script defer th:src="@{/js/vendedor.js}"></script>
+</head>
+
+<body>
+    <div class="work-shell">
+        <aside th:replace="~{fragments/layout :: navegacionVendedor}"></aside>
+        <main class="work-main">
+            <div class="alert success" th:if="${exito}" th:text="${exito}">Éxito</div>
+            <div class="work-heading">
+                <div>
+                    <h1>Clientes</h1>
+                    <p class="subline">Consulta de clientes registrados en la tienda</p>
+                </div>
+            </div>            
+            <div class="card mb2"><input class="control" data-filter="#listado-clientes"
+                    placeholder="Buscar cliente por nombre o correo"></div>
+            <div class="table-scroll">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Código</th>
+                            <th>Cliente</th>
+                            <th>Correo</th>
+                            <th>Estado</th>
+                        </tr>
+                    </thead>
+                    <tbody id="listado-clientes">
+                        <tr th:each="cliente : ${clientes}" data-searchable>
+                            <td th:text="${'CLI-' + cliente.id}"></td>
+                            <td th:text="${cliente.nombres + ' ' + cliente.apellidos}"></td>
+                            <td th:text="${cliente.correo}"></td>
+                            <td><span class="pill green">Activo</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="empty" th:if="${#lists.isEmpty(clientes)}"><span class="empty-icon">📦</span>No hay clientes
+                    registrados.</div>
+            </div>
+        </main>
+    </div>
+</body>
+
+</html>
